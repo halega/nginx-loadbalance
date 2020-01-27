@@ -1,0 +1,44 @@
+version: '3.7'
+
+services:
+  # omgwtfssl-server:
+  #   image: paulczar/omgwtfssl
+  #   restart: "no"
+  #   volumes:
+  #     - ./certs:/certs
+  #   environment:
+  #     - SSL_SUBJECT=play-with-docker.com
+  #     - SSL_KEY=server.key
+  #     - SSL_CSR=server.csr
+  #     - SSL_CERT=server.pem
+
+  # omgwtfssl-client:
+  #   image: paulczar/omgwtfssl
+  #   restart: "no"
+  #   volumes:
+  #     - ./certs:/certs
+  #   environment:
+  #     - SSL_SUBJECT=TestClient1
+  #     - SSL_KEY=client.key
+  #     - SSL_CSR=client.csr
+  #     - SSL_CERT=client.pem
+	  
+  app1:
+    build: ./app
+    image: halega/flask-app
+    environment:
+      - APP_ID=1
+
+  app2:
+    image: halega/flask-app
+    depends_on:
+      - app1
+    environment:
+      - APP_ID=2
+
+  nginx: 
+    image: nginx:1.16-alpine
+    volumes:
+      - ./nginx.conf:/etc/nginx/default.conf:ro
+    ports:
+      - 5443:80
